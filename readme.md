@@ -16,19 +16,38 @@ Run the following command:
 
 Make your rails project to root path:
 
-`**Example**: rails-app`
+**Example**: make project `rails-app`
+```
+📦root-path
+ ┣ 📂log
+ ┃ ┣ 📜bar.txt
+ ┃ ┗ 📜foo.txt
+ ┣ 📂rails-app
+ ┃ ┣ 📂app
+ ┃ ┣ 📂bin
+ ┃ ┣ 📂config
+ ┃ ┗ 📂...
+ ┣ 📜.env.example
+ ┣ 📜.gitignore
+ ┣ 📜Aptfile
+ ┣ 📜dip.yml
+ ┣ 📜docker-compose.yml
+ ┣ 📜Dockerfile.rails
+ ┣ 📜dot.bashrc
+ ┣ 📜dot.psqlrc
+```
 
 #### Step 3 - Copy .env.example to .env
 
-Change directory into the project and copy .env file:
+copy .env file following command:
 
 `$ cp .env.example .env`
 
-Note: Must change APP_NAME same your project's folder name!
-
-#### Step 4 - Config nnvironment  
+#### Step 4 - Config environment  
 
 Edit .env file before next step
+
+Note: Must change **APP_NAME** same your project's folder name!
 
 #### Step 5 - Run docker-compose as follows:
 
@@ -75,7 +94,7 @@ Control-C will stop the rails container.
 $ docker-compose exec rails /bin/bash
 
 # exec /bin/bash on the postgres container
-$ docker-compose exec -u ***{DB_USER in .env}*** postgres /bin/bash
+$ docker-compose exec -u {DB_USER} postgres /bin/bash
 ```
 
 ### stop all containers
