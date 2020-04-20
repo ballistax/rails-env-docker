@@ -1,0 +1,5 @@
+log/*
+postgres/*
+.DS_Store
+.idea
+.env
