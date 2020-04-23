@@ -3,7 +3,7 @@ version: '2.4'
 x-app: &app
   build:
     context: .
-    dockerfile: ./Dockerfile.rails
+    dockerfile: ./.dockerdev/Dockerfile.rails
     args:
       RUBY_VERSION: ${RUBY_VERSION}
       PG_MAJOR: ${POSTGRES_VERSION}
@@ -22,13 +22,13 @@ x-backend: &backend
   stdin_open: true
   tty: true
   volumes:
-    - ./${APP_NAME}:/app:cached
+    - ./:/app:cached
     - rails_cache:/app/tmp/cache
     - bundle:/usr/local/bundle
     - node_modules:/app/node_modules
     - packs:/app/public/packs
-    - ./dot.bashrc:/root/.bashrc:ro
-    - ./dot.psqlrc:/root/.psqlrc:ro
+    - ./.dockerdev/dot.bashrc:/root/.bashrc:ro
+    - ./.dockerdev/dot.psqlrc:/root/.psqlrc:ro
   environment:
     <<: *env
     REDIS_URL: redis://redis:6379/
@@ -66,7 +66,7 @@ services:
   postgres:
     image: postgres:${POSTGRES_VERSION}
     volumes:
-      - ./dot.psqlrc:/root/.psqlrc:ro
+      - ./.dockerdev/dot.psqlrc:/root/.psqlrc:ro
       - postgres:/var/lib/postgresql/data
       - ./log:/root/log:cached
     environment:
@@ -98,7 +98,7 @@ services:
     ports:
       - '3035:3035'
     volumes:
-      - ./${APP_NAME}:/app:cached
+      - ./:/app:cached
       - bundle:/usr/local/bundle
       - node_modules:/app/node_modules
       - packs:/app/public/packs
