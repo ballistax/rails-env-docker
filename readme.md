@@ -57,7 +57,7 @@ Note: This will NOT actually run `yarn install` and/or `rake db:setup`!
 
 #### Step 6 - Run bundle install
 
-`docker-compose run --rm rails bundle install`
+`$ docker-compose run --rm rails bundle install`
 
 #### Step 7 - Run yarn install like so:
 
@@ -99,7 +99,7 @@ $ docker-compose exec -u {DB_USER} postgres /bin/bash
 
 ### stop all containers
 
-`docker-compose down`
+`$ docker-compose down`
 
 ## Dip Integration
 
@@ -107,4 +107,4 @@ $ docker-compose exec -u {DB_USER} postgres /bin/bash
 
 You can skips steps 5 - 9 by simply running:
 
-`dip provision`
+`$ dip provision`
