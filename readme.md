@@ -19,22 +19,25 @@ Make your rails project to root path:
 **Example**: make project `rails-app`
 ```
 📦root-path
- ┣ 📂log
- ┃ ┣ 📜bar.txt
- ┃ ┗ 📜foo.txt
+ ┣ 📂.dockerdev
+ ┃ ┣ 📂postgres
+ ┃ ┃ ┣ 📂scripts
+ ┃ ┃ ┃ ┗ 📜create_postgres_databases.sh
+ ┃ ┃ ┗ 📜dot.psqlrc
+ ┃ ┣ 📜Aptfile
+ ┃ ┗ 📜dot.bashrc
  ┣ 📂rails-app
  ┃ ┣ 📂app
  ┃ ┣ 📂bin
  ┃ ┣ 📂config
- ┃ ┗ 📂...
+ ┃ ┣ 📂db
+ ┃ ┣ 📂...
  ┣ 📜.env.example
  ┣ 📜.gitignore
- ┣ 📜Aptfile
  ┣ 📜dip.yml
  ┣ 📜docker-compose.yml
  ┣ 📜Dockerfile.rails
- ┣ 📜dot.bashrc
- ┣ 📜dot.psqlrc
+ ┗ 📜readme.md
 ```
 
 #### Step 3 - Copy .env.example to .env
@@ -51,25 +54,94 @@ Note: Must change **APP_NAME** same your project's folder name!
 
 #### Step 5 - Run docker-compose as follows:
 
-`$ docker-compose up rails`
+`$ docker-compose up -d runner`
 
 Note: This will NOT actually run `yarn install` and/or `rake db:setup`!
 
 #### Step 6 - Run bundle install
 
-`$ docker-compose run --rm rails bundle install`
+`$ docker-compose run --rm runner bundle install`
+
+or
+
+```
+# exec /bin/bash on the runner container
+# if you exec to runner container already skip this
+$ docker-compose exec runner /bin/bash
+
+$ bundle install
+```
 
 #### Step 7 - Run yarn install like so:
 
-`$ docker-compose run --rm rails yarn install --check-files`
+`$ docker-compose run --rm runner yarn install`
+
+or
+
+```
+# exec /bin/bash on the runner container
+# if you exec to runner container already skip this
+$ docker-compose exec runner /bin/bash
+
+$ yarn install
+```
 
 #### Step 8 - Run rake db:setup on docker container like so:
 
-`$ docker-compose run --rm rails rake db:setup`
+before run command please update **config/database.yml** follow example.
 
-#### Step 9 - Start the entire environment (postgres and redis should already be running)
+**Example**:
+```
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  url: <%= ENV['DATABASE_URL'] %>
+```
+
+or
+
+```
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  host: postgres
+  username: your_pg_username
+  password: your_pg_password
+```
+
+then run command:
+
+`$ docker-compose run --rm runner rake db:setup`
+
+or
+
+```
+# exec /bin/bash on the runner container
+# if you exec to runner container already skip this
+$ docker-compose exec runner /bin/bash
+
+$ rake db:setup
+```
+
+#### Step 9 - Start the entire environment
+
+```
+# exec /bin/bash on the runner container
+# if you exec to runner container already skip this
+$ docker-compose exec runner /bin/bash
+
+$ bundle exec rails s -b 0.0.0.0
+```
+
+or another way
 
 `$ docker-compose up rails`
+
+Note: You must stop runner container before run this by
+
+`$ docker-compose stop runner`
 
 #### Step 10 - Start webpacker (for frontend development)
 
@@ -78,6 +150,16 @@ Note: This will NOT actually run `yarn install` and/or `rake db:setup`!
 ## Commonly used commands during development
 
 ### start rails development server
+
+```
+$ docker-compose up -d runner
+
+$ docker-compose exec runner /bin/bash
+
+$ bundle exec rails s -b 0.0.0.0
+```
+
+or
 
 `$ docker-compose up rails`
 
@@ -90,8 +172,8 @@ Control-C will stop the rails container.
 ### exec a shell on the rails container
 
 ```
-# exec /bin/bash on the rails container
-$ docker-compose exec rails /bin/bash
+# exec /bin/bash on the runner container
+$ docker-compose exec runner /bin/bash
 
 # exec /bin/bash on the postgres container
 $ docker-compose exec -u {DB_USER} postgres /bin/bash
@@ -104,7 +186,5 @@ $ docker-compose exec -u {DB_USER} postgres /bin/bash
 ## Dip Integration
 
 [dip](https://github.com/bibendi/dip) is a 'CLI gives the "native" interaction with applications configured with Docker Compose.' 
-
-You can skips steps 5 - 9 by simply running:
 
 `$ dip provision`
