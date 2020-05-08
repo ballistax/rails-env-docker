@@ -10,6 +10,8 @@ x-app: &app
       NODE_MAJOR: ${NODE_VERSION}
       YARN_VERSION: ${YARN_VERSION}
       BUNDLER_VERSION: ${BUNDLER_VERSION}
+      GIT_NAME: ${GIT_NAME}
+      GIT_EMAIL: ${GIT_EMAIL}
   environment: &env
     NODE_ENV: development
     RAILS_ENV: ${RAILS_ENV:-development}

@@ -6,6 +6,8 @@ ARG PG_MAJOR
 ARG NODE_MAJOR
 ARG BUNDLER_VERSION
 ARG YARN_VERSION
+ARG GIT_NAME
+ARG GIT_EMAIL
 
 # Common dependencies
 RUN apt-get update -qq \
@@ -62,6 +64,13 @@ ENV LANG=C.UTF-8 \
 
 # Upgrade RubyGems and install required Bundler version
 RUN gem install bundler -v $BUNDLER_VERSION
+
+# Config git
+RUN git config --global core.autocrlf false
+
+RUN if [ -n "$GIT_NAME"  ]; then git config --global user.name "$GIT_NAME"; fi
+
+RUN if [ -n "$GIT_EMAIL"  ]; then git config --global user.email "$GIT_EMAIL"; fi
 
 # Create a directory for the app code
 RUN mkdir -p /app
