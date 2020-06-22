@@ -84,9 +84,22 @@ services:
       POSTGRES_MULTIPLE_DATABASES: ${DB_CREATE_NAMES}
     ports:
       - 5432:5432
+    depends_on:
+      - pgadmin
     healthcheck:
       test: pg_isready -U postgres -h 127.0.0.1
       interval: 5s
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@devfeeder.com
+      PGADMIN_DEFAULT_PASSWORD: dontfeed
+    volumes:
+       - pgadmin:/root/.pgadmin
+    ports:
+      - 5050:80
+    restart: unless-stopped
 
   redis:
     image: redis:${REDIS_VERSION}-alpine
